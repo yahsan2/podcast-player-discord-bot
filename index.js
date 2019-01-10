@@ -43,9 +43,6 @@ const playEpisode = async (arg1, arg2)=> {
     return
   }
   textChannel.send(`${currentEposode.title} ${rssChannels[arg1].hashtag}\n${currentEposode.link}`)
-  dispatcher.on('speaking', reason => {
-    console.log(reason);
-  });
 }
 
 const parseXml = (xml)=>{
