@@ -7,6 +7,7 @@ const client = new Discord.Client();
 client.login(process.env.DISCORD_BOT_KEY)
 
 var connection = null
+var dispatcher = null
 
 client.on('ready', async () => {
   const channel = client.channels.get(process.env.DISCORD_CHANNEL_ID)
@@ -20,11 +21,24 @@ client.on('ready', async () => {
 client.on('message', async message => {
   if (!message.guild) return;
 
-  if (connection) {    
-    const dispatcher = connection.playStream('http://cdn.rebuild.fm/audio/podcast-ep224a.mp3')
-    
-    dispatcher.on('speaking', reason => {
-      console.log(reason);
-    });
+  const [
+    cmd, 
+    arg1=null, 
+    arg2=null
+  ] = message.content.split(' ')
+  
+  if (cmd === '!podcast') {
+    if(['stop', 'pause'].indexOf(arg1) > -1 && dispatcher) {      
+      dispatcher.pause()
+      return 
+    }
+
+    if (connection) {    
+      dispatcher = connection.playStream(arg1)
+      
+      dispatcher.on('speaking', reason => {
+        console.log(reason);
+      });
+    }    
   }
 });
