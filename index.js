@@ -34,15 +34,15 @@ const playEpisode = async (arg1, arg2)=> {
   } else if(rssChannels[arg1]){
     await setEpisode( rssChannels[arg1], arg2)
     dispatcher = connection.playStream(currentEposode.enclosure.$.url)
-    dispatcher.on('end', reason => {
-      const key = channelKeys[Math.floor(Math.random() * channelKeys.length)];
-      playEpisode(key)
-    });  
   } else {
     textChannel.send(`指定のポッドキャストが見つかりません`)
     return
   }
   textChannel.send(`${currentEposode.title} ${rssChannels[arg1].hashtag}\n${currentEposode.link}`)
+  dispatcher.on('end', reason => {
+    const key = channelKeys[Math.floor(Math.random() * channelKeys.length)];
+    playEpisode(key)
+  });  
 }
 
 const parseXml = (xml)=>{
