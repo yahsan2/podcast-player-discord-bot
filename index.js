@@ -2,6 +2,7 @@ process.on('unhandledRejection', console.dir);
 require('dotenv').config()
 
 const rssChannels = require('./rss.json');
+const channelKeys = Object.keys(rssChannels)
 
 const Discord = require('discord.js');
 const client = new Discord.Client();
@@ -23,6 +24,28 @@ const setEpisode = async (podcastChannel, epi)=> {
   
   feedItems = xmlObj.rss.channel.item
   currentEposode = feedItems[epi ? feedItems.length - epi : 0]
+}
+
+const playEpisode = async (arg1, arg2)=> {
+  if(dispatcher) dispatcher.end()
+      
+  if(arg1 === 'mp3') {
+    dispatcher = connection.playStream(arg2)
+  } else if(rssChannels[arg1]){
+    await setEpisode( rssChannels[arg1], arg2)
+    dispatcher = connection.playStream(currentEposode.enclosure.$.url)
+    dispatcher.on('end', reason => {
+      const key = channelKeys[Math.floor(Math.random() * channelKeys.length)];
+      playEpisode(key)
+    });  
+  } else {
+    textChannel.send(`指定のポッドキャストが見つかりません`)
+    return
+  }
+  textChannel.send(`${currentEposode.title} ${rssChannels[arg1].hashtag}\n${currentEposode.link}`)
+  dispatcher.on('speaking', reason => {
+    console.log(reason);
+  });
 }
 
 const parseXml = (xml)=>{
@@ -66,21 +89,7 @@ client.on('message', async message => {
     }
 
     if (connection) {
-      if(dispatcher) dispatcher.end()
-      
-      if(arg1 === 'mp3') {
-        dispatcher = connection.playStream(arg2)
-      } else if(rssChannels[arg1]){
-        await setEpisode( rssChannels[arg1], arg2)
-        dispatcher = connection.playStream(currentEposode.enclosure.$.url)
-      } else {
-        textChannel.send(`指定のポッドキャストが見つかりません`)
-        return
-      }
-      textChannel.send(`${currentEposode.title} ${rssChannels[arg1].hashtag}\n${currentEposode.link}`)
-      dispatcher.on('speaking', reason => {
-        console.log(reason);
-      });
+      playEpisode(arg1, arg2)
     }    
   }
 });
