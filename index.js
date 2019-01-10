@@ -6,7 +6,6 @@ const rssChannels = require('./rss.json');
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const xml2js = require('xml2js')
-const xmlParser = require('fast-xml-parser')
 const axios = require('axios')
 
 var textChannel = null
