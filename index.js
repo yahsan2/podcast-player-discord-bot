@@ -27,7 +27,7 @@ client.on('message', async message => {
     arg2=null
   ] = message.content.split(' ')
   
-  if (cmd === '!podcast') {
+  if (cmd === '!podcast' && message.channel.id === process.env.DISCORD_TEXT_CHANNEL_ID) {
     if(['stop', 'pause'].indexOf(arg1) > -1 && dispatcher) {      
       dispatcher.pause()
       return 
