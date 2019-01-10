@@ -144,6 +144,11 @@
     "twitter": null,
     "hashtag": "#nextstepfm"
   },
+  "nishidakefm": {
+    "feed": "https://anchor.fm/s/2a3c288/podcast/rss",
+    "twitter": "@nishidalol",
+    "hashtag": "#nishidakefm"
+  },
   "nobolycloud": {
     "feed": "http://feeds.soundcloud.com/users/soundcloud:users:230945921/sounds.rss",
     "twitter": null,
