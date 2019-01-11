@@ -71,6 +71,7 @@ client.login(process.env.DISCORD_BOT_KEY)
 client.on('ready', async () => {
   textChannel = client.channels.get(process.env.DISCORD_TEXT_CHANNEL_ID)
   voiceChannel = client.channels.get(process.env.DISCORD_CHANNEL_ID)
+  console.log(process.env.IS_INFINITY)
   if(process.env.IS_INFINITY){
     await playEpisode('random')
   }
