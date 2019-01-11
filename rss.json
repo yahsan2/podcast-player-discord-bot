@@ -1,4 +1,9 @@
 {
+  "aozorafm": {
+    "feed": "https://fortegp05.github.io/aozorafm/feed.xml",
+    "twitter": "@FORTEgp05",
+    "hashtag": "#aozorafm"
+  },
   "ajito": {
     "feed": "https://ajito.fm/index.xml",
     "twitter": "@ajitofm",
@@ -49,7 +54,7 @@
     "twitter": "@dexfmpodcast",
     "hashtag": "#dexfm"
   },
-    "dongurifm": {
+  "dongurifm": {
     "feed": "http://feeds.soundcloud.com/users/soundcloud:users:170031062/sounds.rss",
     "twitter": "@dongurifm",
     "hashtag": "#dongurifm"
