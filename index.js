@@ -40,6 +40,9 @@ const playEpisode = async (arg1, arg2)=> {
     if (currentEposode.enclosure) {
       console.log(currentEposode.enclosure.$.url)
       dispatcher = connection.playStream(currentEposode.enclosure.$.url)
+    } else {
+      textChannel.send(`指定のポッドキャストの feed が正しくありません`)
+      return 
     }
   } else {
     textChannel.send(`指定のポッドキャストが見つかりません`)
