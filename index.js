@@ -37,9 +37,10 @@ const playEpisode = async (arg1, arg2)=> {
     dispatcher = connection.playStream(arg2)
   } else if(rssChannels[key]){
     await setEpisode( rssChannels[key], arg2)
-    console.log(currentEposode.enclosure.$.url)
-    
-    dispatcher = connection.playStream(currentEposode.enclosure.$.url)
+    if (currentEposode.enclosure) {
+      console.log(currentEposode.enclosure.$.url)
+      dispatcher = connection.playStream(currentEposode.enclosure.$.url)
+    }
   } else {
     textChannel.send(`指定のポッドキャストが見つかりません`)
     return
