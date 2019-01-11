@@ -15,6 +15,7 @@ var connection = null
 var dispatcher = null
 var currentEpisode = null
 var feedItems = []
+var isStoped = false
 
 
 const setEpisode = async (podcastChannel, epi)=> {
@@ -27,21 +28,31 @@ const setEpisode = async (podcastChannel, epi)=> {
 }
 
 const playEpisode = async (arg1, arg2)=> {
-  if(dispatcher) dispatcher.end()
-      
+  connection = await voiceChannel.join()    
+
+  isStoped = false
   if(arg1 === 'mp3') {
     dispatcher = connection.playStream(arg2)
   } else if(rssChannels[arg1]){
     await setEpisode( rssChannels[arg1], arg2)
+    console.log(currentEposode.enclosure.$.url)
+    
     dispatcher = connection.playStream(currentEposode.enclosure.$.url)
   } else {
     textChannel.send(`指定のポッドキャストが見つかりません`)
     return
   }
   textChannel.send(`${currentEposode.title} ${rssChannels[arg1].hashtag}\n${currentEposode.link}`)
+
+  dispatcher.on('speaking', speaking => {
+    console.log('speaking', speaking) 
+  })
   dispatcher.on('end', reason => {
-    const key = channelKeys[Math.floor(Math.random() * channelKeys.length)];
-    playEpisode(key)
+    connection.disconnect()    
+    if (!isStoped) {
+      const key = channelKeys[Math.floor(Math.random() * channelKeys.length)];
+      playEpisode(key)      
+    }
   });  
 }
 
@@ -60,10 +71,6 @@ client.on('ready', async () => {
   textChannel = client.channels.get(process.env.DISCORD_TEXT_CHANNEL_ID)
   voiceChannel = client.channels.get(process.env.DISCORD_CHANNEL_ID)
   
-  if(voiceChannel){
-    connection = await voiceChannel.join()    
-  }
-
   await setEpisode( rssChannels['rebuild'] )
   console.log(`Logged in as ${client.user.tag}!`);
 });
@@ -79,14 +86,11 @@ client.on('message', async message => {
   
   if (cmd === '!podcast' && message.channel.id === process.env.DISCORD_TEXT_CHANNEL_ID) {
     if(['stop', 'pause'].indexOf(arg1) > -1 && dispatcher) {      
-      dispatcher.pause()
+      isStoped = true
+      dispatcher.end()
       textChannel.send(`${currentEposode.title}を \`${dispatcher.time}\` で止めました`)
-
       return 
     }
-
-    if (connection) {
-      playEpisode(arg1, arg2)
-    }    
+    playEpisode(arg1, arg2)
   }
 });
